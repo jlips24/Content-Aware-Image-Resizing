@@ -17,7 +17,12 @@ def main():
 
 
     sC = SeamCarver(inputFilename, outputFilename, outputWidth, outputHeight)
-    sC.seamCarving()
+    energyMap = sC.getEnergyMap()
+    mins, backtrack = sC.getCumulativeMaps(energyMap)
+    print(mins.shape)
+    print(backtrack.shape)
+    print(mins)
+    print(backtrack)
 
 if __name__ == "__main__":
     main()
