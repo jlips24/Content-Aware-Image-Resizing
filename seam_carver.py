@@ -2,38 +2,134 @@
 """
 Created on Wed Dec  5 19:22:28 2018
 
-@author: durus
+@author: durus and jdlips
 """
 
 import numpy as np
 import cv2
-from utils import *
 
 class SeamCarver:
-    
+
+    def __init__(self, inputFilename, outputFilename, outputWidth, outputHeight):
+        # Setting input parameters
+        self.inputFilename = inputFilename
+        self.inputImg = cv2.imread(inputFilename)
+        self.inputHeight = np.size(self.inputImg, 0)
+        self.inputWidth = np.size(self.inputImg, 1)
+
+        # Setting output parameters
+        self.outputFilename = outputFilename
+        self.outputImg = np.copy(self.inputImg)
+        self.outputWidth = outputWidth
+        self.outputHeight = outputHeight
+
+    def seamCarving(self):
+        colSeams = self.inputWidth - self.outputWidth
+        # Checking if we are removing seams or adding them
+        if colSeams > 0:
+            self.removeSeams(colSeams)
+        elif colSeams < 0:
+            self.addSeams(-1 * colSeams)
+
+    def removeSeams(self, seams):
+        count = 0
+        while count < seams:
+            energyMap = self.getEnergyMap()
+            energyValuesDown = self.getConsecutiveEnergyValues(energyMap)
+            #leastEnergySeam = self.getLeastEnergySeam(energyValuesDown)
+            #self.removeSeam(leastEnergySeam)
+            count += 1
+
+    def getEnergyMap(self):
+        blue = self.outputImg[:,:,0]
+        green = self.outputImg[:,:,1]
+        red = self.outputImg[:,:,2]
+        blueEnergy = np.absolute(cv2.Scharr(blue, -1, 1, 0)) + np.absolute(cv2.Scharr(blue, -1, 0, 1))
+        greenEnergy = np.absolute(cv2.Scharr(green, -1, 1, 0)) + np.absolute(cv2.Scharr(green, -1, 0, 1))
+        redEnergy = np.absolute(cv2.Scharr(red, -1, 1, 0)) + np.absolute(cv2.Scharr(red, -1, 0, 1))
+        energyMap = blueEnergy + greenEnergy + redEnergy
+        return energyMap
+
+    # HAHAHA I SPENT SO LONG THINKING ABOUT THIS PART AND THEN FUCKED IT UP BAD LOL
+    def getConsecutiveEnergyValues(self, energyMap):
+        energyValuesDown = np.copy(energyMap)
+        energyRows, energyCols = energyMap.shape
+        print(self.inputHeight)
+        currentCol = 0
+
+        while (currentCol < energyCols):
+            leastEnergyColNext = 0
+            currentRow = 0
+            while (currentRow < energyRows):
+                # First column case
+                if (currentCol == 0):
+                    if (energyValuesDown[currentRow + 1][currentCol] < energyValuesDown[currentRow + 1][currentCol + 1]):
+                        leastEnergyColNext = currentCol
+                    else:
+                        leastEnergyColNext = currentCol + 1
+                elif (currentCol == energyCols):
+                    if (energyValuesDown[currentRow + 1][currentCol - 1] < energyValuesDown[currentRow + 1][currentCol]):
+                        leastEnergyColNext = currentCol - 1
+                    else:
+                        leastEnergyColNext = currentCol
+                # Regular case
+                else:
+                    if (currentCol == 0):
+                        if (energyValuesDown[currentRow + 1][currentCol - 1] < energyValuesDown[currentRow + 1][currentCol]):
+                            if (energyValuesDown[currentRow + 1][currentCol - 1] < energyValuesDown[currentRow + 1][currentCol + 1]):
+                                leastEnergyColNext = currentCol - 1
+                            else:
+                                leastEnergyColNext = currentCol
+                        elif (energyValuesDown[currentRow + 1][currentCol] < energyValuesDown[currentRow + 1][currentCol + 1]):
+                            leastEnergyColNext = currentCol
+                        else:
+                            leastEnergyColNext = currentCol + 1
+
+
+
+
+
+                currentRow += 1
+            currentCol += 1
+
+
+
+    #TODO: [X] Finish seamCarving(self):
+        #TODO: [X] Finsh removeSeams(self, seams):
+        #TODO: [X] Finish getEnergyMap(self):
+            #TODO: [ ] Finish getConsecutiveEnergyValues(self, energyValues):
+            #TODO: [ ] start getLeastEnergySeam(self, energyValuesDown):
+            #TODO: [ ] start removeSeam(self, leastEnergySeam):
+        #TODO: [ ] start addSeams():
+
+
+    # Old Code
+"""
     def __init__(self, img):
         self.img = img
-        
+
     def min_seam(self):
-        """ 
-        Find the path of least energy from the top of the image to the bottom
-        
-        Args:
-            self - SeamCarver instance
-        Returns:
-            mins - an np array that stores the minimum energy value that stores 
-                   the minimum energy value seen so far
-            backtrack - contains the list of pixels in the seam
-        """
-        
+
+
+#        Find the path of least energy from the top of the image to the bottom
+#
+#        Args:
+#            self - SeamCarver instance
+#        Returns:
+#            mins - an np array that stores the minimum energy value that stores
+#                   the minimum energy value seen so far
+#            backtrack - contains the list of pixels in the seam
+
+
+
         row, col, x = self.img.shape
-        
+
         e_map = energy_map(self.img)
         mins = e_map.copy()
         backtrack = np.zeros(mins.shape, dtype=np.int)
-        
+
         print("hi")
-        
+
         for r in range(1, row):
             for c in range(0, col):
                 if c == 0:
@@ -53,3 +149,4 @@ class SeamCarver:
                 mins[r, c] += min_energy
 
         return mins, backtrack
+"""
