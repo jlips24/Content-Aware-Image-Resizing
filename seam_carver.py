@@ -50,20 +50,47 @@ class SeamCarver:
         energyMap = blueEnergy + greenEnergy + redEnergy
         return energyMap
 
+    # HAHAHA I SPENT SO LONG THINKING ABOUT THIS PART AND THEN FUCKED IT UP BAD LOL
     def getConsecutiveEnergyValues(self, energyMap):
         energyValuesDown = np.copy(energyMap)
-        rows, cols = energyMap.shape
-        print(rows)
+        energyRows, energyCols = energyMap.shape
         print(self.inputHeight)
         currentCol = 0
-        while (currentCol < self.inputWidth):
+
+        while (currentCol < energyCols):
+            leastEnergyColNext = 0
             currentRow = 0
-            while (currentRow < self.inputHeight):
-                #if (currentRow == 0):
+            while (currentRow < energyRows):
+                # First column case
+                if (currentCol == 0):
+                    if (energyValuesDown[currentRow + 1][currentCol] < energyValuesDown[currentRow + 1][currentCol + 1]):
+                        leastEnergyColNext = currentCol
+                    else:
+                        leastEnergyColNext = currentCol + 1
+                elif (currentCol == energyCols):
+                    if (energyValuesDown[currentRow + 1][currentCol - 1] < energyValuesDown[currentRow + 1][currentCol]):
+                        leastEnergyColNext = currentCol - 1
+                    else:
+                        leastEnergyColNext = currentCol
+                # Regular case
+                else:
+                    if (currentCol == 0):
+                        if (energyValuesDown[currentRow + 1][currentCol - 1] < energyValuesDown[currentRow + 1][currentCol]):
+                            if (energyValuesDown[currentRow + 1][currentCol - 1] < energyValuesDown[currentRow + 1][currentCol + 1]):
+                                leastEnergyColNext = currentCol - 1
+                            else:
+                                leastEnergyColNext = currentCol
+                        elif (energyValuesDown[currentRow + 1][currentCol] < energyValuesDown[currentRow + 1][currentCol + 1]):
+                            leastEnergyColNext = currentCol
+                        else:
+                            leastEnergyColNext = currentCol + 1
+
+
+
+
 
                 currentRow += 1
             currentCol += 1
-        return 0
 
 
 
