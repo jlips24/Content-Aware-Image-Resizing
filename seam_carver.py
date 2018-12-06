@@ -119,20 +119,20 @@ class SeamCarver:
         return lis
 
     def split_channels(self):
-        
+
         blue = self.outputImg[:,:,0]
         green = self.outputImg[:,:,1]
         red = self.outputImg[:,:,2]
 
         return blue, green, red
-    
+
     def removeSeam(self, leastEnergySeam):
         row, col = self.outputImg.shape[: 2]
         output = np.zeros((row, col - 1, 3))
         for r in range(row):
-            c = leastEnergySeam[row]
+            c = leastEnergySeam[r]
             for i in range(3):
-                output[r, :, i] = np.delete(self.out_image[r, :, i], [c])
+                output[r, :, i] = np.delete(self.outputImg[r, :, i], [c])
         self.outputImg = np.copy(output)
 
     #TODO: [X] Finish seamCarving(self):
