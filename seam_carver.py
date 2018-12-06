@@ -126,6 +126,15 @@ class SeamCarver:
         red = self.outputImg[:,:,2]
 
         return blue, green, red
+    
+    def removeSeam(self, leastEnergySeam):
+        row, col = self.outputImg.shape[: 2]
+        output = np.zeros((row, col - 1, 3))
+        for r in range(row):
+            c = leastEnergySeam[row]
+            for i in range(3):
+                output[r, :, i] = np.delete(self.out_image[r, :, i], [c])
+        self.outputImg = np.copy(output)
 
     #TODO: [X] Finish seamCarving(self):
         #TODO: [X] Finsh removeSeams(self, seams):
