@@ -37,7 +37,7 @@ class SeamCarver:
             energyMap = self.getEnergyMap()
             energyValuesDown = self.getCumulativeMaps(energyMap)
             leastEnergySeam = self.getLeastEnergySeam(energyValuesDown[0])
-            #self.removeSeam(leastEnergySeam)
+            self.removeSeam(leastEnergySeam)
             count += 1
 
     def getEnergyMap(self):
@@ -119,7 +119,7 @@ class SeamCarver:
         return lis
 
     def split_channels(self):
-
+        
         blue = self.outputImg[:,:,0]
         green = self.outputImg[:,:,1]
         red = self.outputImg[:,:,2]
@@ -131,7 +131,8 @@ class SeamCarver:
         #TODO: [X] Finish getEnergyMap(self):
             #TODO: [X] Finish getCumulativeMaps(self, energyValues):
                 #TODO: [ ]Test getCumulativeMaps(self, energyMap)
-            #TODO: [ ] start getLeastEnergySeam(self, energyValuesDown):
+            #TODO: [X] start getLeastEnergySeam(self, energyValuesDown):
+                #TODO: [ ] change getLeastEnergySeam more
             #TODO: [ ] start removeSeam(self, leastEnergySeam):
         #TODO: [ ] start addSeams():
     #TODO: [ ] Test with multile images and output sizes
