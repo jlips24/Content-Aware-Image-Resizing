@@ -11,13 +11,10 @@ import os
 
 def main():
     inputFilename = "input/castle.jpg"
-    outputFilename = "output/castle_carved.jpg"
     outputWidth = 968
     outputHeight = 968
+    outputFilename = "output/castle_" + str(outputWidth) + "x" + str(outputHeight) + ".jpg"
 
-    inputImg = cv2.imread(inputFilename)
-
-    inputWidth = np.size(inputImg, 0)
 
     sC = SeamCarver(inputFilename, outputFilename, outputWidth, outputHeight)
 
