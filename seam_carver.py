@@ -107,8 +107,7 @@ class SeamCarver:
         return mins, backtrack
 
     def getLeastEnergySeam(self, energyValuesDown):
-        m = energyValuesDown.shape[0]
-        n = energyValuesDown.shape[1]
+        m, n = energyValuesDown.shape
         lis = np.zeros((m,), dtype=np.uint32)
         lis[-1] = np.argmin(energyValuesDown[-1])
         for row in range(m - 2, -1, -1):
