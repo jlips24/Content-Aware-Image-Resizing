@@ -47,7 +47,6 @@ class SeamCarver:
             leastEnergySeam = self.getLeastEnergySeam(energyValuesDown[0])
             self.removeSeam(leastEnergySeam)
             self.percentDone = (self.count/self.delta)
-            print(self.count/self.delta)
             if (self.percentDone >= self.prevPercentDone + 0.01):
                 self.prevPercentDone = round(self.percentDone, 2)
                 print(str(self.prevPercentDone * 100) + "%")
