@@ -2,7 +2,7 @@
 """
 Created on Wed Dec  5 19:22:28 2018
 
-@author: durus
+@author: durus and jdlips
 """
 
 import numpy as np
@@ -22,6 +22,19 @@ class SeamCarver:
         self.outputFilename = outputFilename
         self.outputWidth = outputWidth
         self.outputHeight = outputHeight
+
+    def seamCarving(self):
+
+
+
+
+
+
+
+
+
+
+
 
     def min_seam(self):
         """
