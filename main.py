@@ -17,6 +17,7 @@ def main():
 
 
     sC = SeamCarver(inputFilename, outputFilename, outputWidth, outputHeight)
+    sC.seamCarving()
 
 if __name__ == "__main__":
     main()

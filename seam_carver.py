@@ -31,48 +31,69 @@ class SeamCarver:
         elif colSeams < 0:
             self.addSeams(-1 * colSeams)
 
-    def removeSeams(seams):
+    def removeSeams(self, seams):
         count = 0
         while count < seams:
             energyMap = self.getEnergyMap()
-            energyValuesDown = self.getEnergyValuesDown(energyMap)
+            energyValuesDown = self.getConsecutiveEnergyValues(energyMap)
             #leastEnergySeam = self.getLeastEnergySeam(energyValuesDown)
             #self.removeSeam(leastEnergySeam)
             count += 1
 
-    def getEnergyMap():
-        blue, green, red = cv2.split(self.outputImage)
+    def getEnergyMap(self):
+        blue = self.outputImg[:,:,0]
+        green = self.outputImg[:,:,1]
+        red = self.outputImg[:,:,2]
         blueEnergy = np.absolute(cv2.Scharr(blue, -1, 1, 0)) + np.absolute(cv2.Scharr(blue, -1, 0, 1))
         greenEnergy = np.absolute(cv2.Scharr(green, -1, 1, 0)) + np.absolute(cv2.Scharr(green, -1, 0, 1))
         redEnergy = np.absolute(cv2.Scharr(red, -1, 1, 0)) + np.absolute(cv2.Scharr(red, -1, 0, 1))
         energyMap = blueEnergy + greenEnergy + redEnergy
         return energyMap
 
-    def getEnergyValuesDown(energyValues):
+    def getConsecutiveEnergyValues(self, energyMap):
+        energyValuesDown = np.copy(energyMap)
+        rows, cols = energyMap.shape
+        print(rows)
+        print(self.inputHeight)
+        currentCol = 0
+        while (currentCol < self.inputWidth):
+            currentRow = 0
+            while (currentRow < self.inputHeight):
+                #if (currentRow == 0):
+
+                currentRow += 1
+            currentCol += 1
+        return 0
 
 
-    #TODO: getLeastEnergySeam(energyValuesDown):
-    #TODO: removeSeam(leastEnergySeam):
+
+    #TODO: [X] Finish seamCarving(self):
+        #TODO: [X] Finsh removeSeams(self, seams):
+        #TODO: [X] Finish getEnergyMap(self):
+            #TODO: [ ] Finish getConsecutiveEnergyValues(self, energyValues):
+            #TODO: [ ] start getLeastEnergySeam(self, energyValuesDown):
+            #TODO: [ ] start removeSeam(self, leastEnergySeam):
+        #TODO: [ ] start addSeams():
 
 
     # Old Code
-    """
+"""
     def __init__(self, img):
         self.img = img
 
     def min_seam(self):
-        """
-        """
-        Find the path of least energy from the top of the image to the bottom
 
-        Args:
-            self - SeamCarver instance
-        Returns:
-            mins - an np array that stores the minimum energy value that stores
-                   the minimum energy value seen so far
-            backtrack - contains the list of pixels in the seam
-        """
-        """
+
+#        Find the path of least energy from the top of the image to the bottom
+#
+#        Args:
+#            self - SeamCarver instance
+#        Returns:
+#            mins - an np array that stores the minimum energy value that stores
+#                   the minimum energy value seen so far
+#            backtrack - contains the list of pixels in the seam
+
+
 
         row, col, x = self.img.shape
 
@@ -101,4 +122,4 @@ class SeamCarver:
                 mins[r, c] += min_energy
 
         return mins, backtrack
-    """
+"""
