@@ -20,13 +20,6 @@ def main():
     sC.seamCarving();
     cv2.imwrite(outputFilename, sC.outputImg)
     print("Done")
-    #energyMap = sC.getEnergyMap()
-    #mins, backtrack = sC.getCumulativeMaps(energyMap)
-    #out = sC.getLeastEnergySeam(mins)
-    #sC.removeSeam
-    #imwrite(sC.outputImg(Out))
-    #print(out.shape)
-    #print(out)
 
 if __name__ == "__main__":
     main()
