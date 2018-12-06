@@ -23,6 +23,13 @@ class SeamCarver:
         self.outputWidth = outputWidth
         self.outputHeight = outputHeight
 
+        # Setting percent parameters
+        self.count = 1
+        self.stepImg = np.copy(self.inputImg)
+        self.delta = (np.absolute(self.inputWidth - self.outputWidth) + np.absolute(self.inputHeight - self.outputHeight))
+        self.percentDone = 0
+        self.prevPercentDone = self.percentDone
+
     def seamCarving(self):
         colSeams = self.inputWidth - self.outputWidth
         # Checking if we are removing seams or adding them
@@ -38,6 +45,10 @@ class SeamCarver:
             energyValuesDown = self.getCumulativeMaps(energyMap)
             leastEnergySeam = self.getLeastEnergySeam(energyValuesDown[0])
             self.removeSeam(leastEnergySeam)
+            self.percentDone = (count/self.delta)
+            if (self.percentDone >= self.prevPercentDone + 1):
+                self.prevPercentDone += 1
+                print(str(self.prevPercentDone) + "%")
             count += 1
 
     def getEnergyMap(self):
@@ -128,12 +139,22 @@ class SeamCarver:
 
     def removeSeam(self, leastEnergySeam):
         row, col = self.outputImg.shape[: 2]
+        outputStep = self.stepImg
+        for r in range(row):
+            c = leastEnergySeam[r]
+            self.stepImg[r,c] = [0, 0, 255]
+        cv2.imwrite("output/steps/castle_" + str(self.outputWidth) + str(self.outputHeight) + "_" + str(self.count) + ".jpg", self.stepImg)
+        self.count += 1
+
+
+        row, col = self.outputImg.shape[: 2]
         output = np.zeros((row, col - 1, 3))
         for r in range(row):
             c = leastEnergySeam[r]
             for i in range(3):
                 output[r, :, i] = np.delete(self.outputImg[r, :, i], [c])
         self.outputImg = np.copy(output)
+        self.stepImg = np.copy(self.outputImg)
 
     #TODO: [X] Finish seamCarving(self):
         #TODO: [X] Finsh removeSeams(self, seams):

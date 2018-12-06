@@ -11,7 +11,7 @@ import os
 
 def main():
     inputFilename = "input/castle.jpg"
-    outputWidth = 1418
+    outputWidth = 1417
     outputHeight = 968
     outputFilename = "output/castle_" + str(outputWidth) + "x" + str(outputHeight) + ".jpg"
 
@@ -19,6 +19,7 @@ def main():
     sC = SeamCarver(inputFilename, outputFilename, outputWidth, outputHeight)
     sC.seamCarving();
     cv2.imwrite(outputFilename, sC.outputImg)
+    print("Done")
     #energyMap = sC.getEnergyMap()
     #mins, backtrack = sC.getCumulativeMaps(energyMap)
     #out = sC.getLeastEnergySeam(mins)
