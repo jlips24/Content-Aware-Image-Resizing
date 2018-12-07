@@ -51,6 +51,7 @@ class SeamCarver:
         rowSeams = self.inputHeight - self.outputHeight
         # Checking if we are removing seams or adding them to the height
         if rowSeams != 0:
+            print("hello")
             self.outputImg = cv2.rotate(self.outputImg, 0)
             self.outputHeight = np.size(self.outputImg, 0)
             self.outputWidth = np.size(self.outputImg, 1)
@@ -88,7 +89,8 @@ class SeamCarver:
             count += 1
 
     """
-
+    getEnergyMap
+    Generates a
     """
     def getEnergyMap(self):
 
