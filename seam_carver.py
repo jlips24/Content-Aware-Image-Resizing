@@ -67,6 +67,19 @@ class SeamCarver:
                 print(str(self.prevPercentDone * 100) + "%")
             count += 1
 
+    def addSeams(self, seams):
+        count = 0
+        while count < seams:
+            energyMap = self.getEnergyMap()
+            energyValuesDown = self.getCumulativeMaps(energyMap)
+            leastEnergySeam = self.getLeastEnergySeam(energyValuesDown[1])
+            self.addSeam(leastEnergySeam)
+            self.percentDone = (self.count/self.delta)
+            if (self.percentDone >= self.prevPercentDone + 0.01):
+                self.prevPercentDone = round(self.percentDone, 2)
+                print(str(self.prevPercentDone * 100) + "%")
+            count += 1
+
     def getEnergyMap(self):
 
         blue, green, red = self.split_channels()
@@ -143,7 +156,7 @@ class SeamCarver:
 
     def removeSeam(self, leastEnergySeam):
 
-        if (self.demo == True):
+        if (self.demo):
             self.demoSteps(leastEnergySeam)
 
         row, col = self.outputImg.shape[: 2]
@@ -155,6 +168,29 @@ class SeamCarver:
         self.outputImg = np.copy(output)
         self.stepImg = np.copy(self.outputImg)
 
+    def addSeam(self, backtrack):
+
+        if (self.demo):
+            self.demoSteps(backtrack)
+
+        row, col = self.outputImg.shape[: 2]
+        output = np.zeros((row, col + 1, 3))
+        outputImg = self.outputImg
+
+        for r in range(row):
+            c = backtrack[r]
+            for i in range(3):
+                if c == 0:
+                    output[r, c, i] = outputImg[r, c, i]
+                    output[r, c + 1, i] = np.average(outputImg[r, c: c + 2, i])
+                    output[r, c + 1:, i] = outputImg[r, c:, i]
+                else:
+                    output[r, :c, i] = outputImg[r, :c, i]
+                    output[r, c, i] = np.average(outputImg[r, c - 1: c + 1, i])
+                    output[r, c + 1:, i] = outputImg[r, c:, i]
+
+        self.outputImg = np.copy(output)
+
     def outputImageToFile(self, filename, img):
         if (self.rotated):
             img = cv2.rotate(img, 2)
@@ -164,6 +200,7 @@ class SeamCarver:
 
     def demoSteps(self, leastEnergySeam):
         row, col = self.outputImg.shape[: 2]
+        self.stepImg = np.copy(self.outputImg)
         outputStep = self.stepImg
         for r in range(row):
             c = leastEnergySeam[r]
