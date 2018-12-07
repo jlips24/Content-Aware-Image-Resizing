@@ -7,9 +7,13 @@ Created on Wed Dec  5 19:22:28 2018
 
 import numpy as np
 import cv2
+"""
 
+"""
 class SeamCarver:
+    """
 
+    """
     def __init__(self, inputFilename, outputFilename, outputWidth, outputHeight, demo=False):
         # Setting input parameters
         self.inputFilename = inputFilename
@@ -27,11 +31,14 @@ class SeamCarver:
         self.count = 0
         self.stepImg = np.copy(self.inputImg)
         self.delta = (np.absolute(self.inputWidth - self.outputWidth) + np.absolute(self.inputHeight - self.outputHeight))
-        self.percentDone = 0.001
+        self.percentDone = 0.00001
         self.prevPercentDone = self.percentDone
         self.demo = demo
         self.rotated = False
 
+    """
+
+    """
     def seamCarving(self):
         colSeams = self.inputWidth - self.outputWidth
         # Checking if we are removing seams or adding them to the width
@@ -53,7 +60,9 @@ class SeamCarver:
                 self.removeSeams(rowSeams)
             elif rowSeams < 0:
                 self.addSeams(-1 * rowSeams)
+    """
 
+    """
     def removeSeams(self, seams):
         count = 0
         while count < seams:
@@ -64,7 +73,9 @@ class SeamCarver:
             self.percentDone = (self.count/self.delta)
             self.printPercentDone()
             count += 1
+    """
 
+    """
     def addSeams(self, seams):
         count = 0
         while count < seams:
@@ -76,6 +87,9 @@ class SeamCarver:
             self.printPercentDone()
             count += 1
 
+    """
+
+    """
     def getEnergyMap(self):
 
         blue, green, red = self.split_channels()
@@ -86,6 +100,14 @@ class SeamCarver:
         energyMap = blueEnergy + greenEnergy + redEnergy
         return energyMap
 
+    """
+    getCumulativeMaps
+    Gets a cummulative energy map of the image from a non cummulative energy map
+    of the image
+    @params:    energyMap: a non cummulative energy map of the photo
+    @returns:   mins:
+                backtrack:
+    """
     def getCumulativeMaps(self, energyMap):
 
         blue, green, red = self.split_channels()
@@ -130,6 +152,13 @@ class SeamCarver:
 
         return mins, backtrack
 
+    """
+    getLeastEnergySeam
+    Returns the least energy seam in an image from a map of all of the seams
+    @params:    energyValuesDown: a map of cummulative energy values (seams) in
+                the image
+    @returns:   lis: The least energy value seam in the image
+    """
     def getLeastEnergySeam(self, energyValuesDown):
         m, n = energyValuesDown.shape
         lis = np.zeros((m,), dtype=np.uint32)
@@ -142,6 +171,13 @@ class SeamCarver:
                 lis[row] = np.argmin(energyValuesDown[row, prv_x - 1: min(prv_x + 2, n - 1)]) + prv_x - 1
         return lis
 
+    """
+    split_channels
+    Splits an image into red, blue, and green channels
+    @returns:   blue: the blue channel of the image
+                green: the green channel of the image
+                red: the red channel of the image
+    """
     def split_channels(self):
 
         blue = self.outputImg[:,:,0]
@@ -150,10 +186,15 @@ class SeamCarver:
 
         return blue, green, red
 
+    """
+    removeSeam
+    Removes a pixel layer (seam) from the image
+    @params:    leastEnergySeam: Map of the lowest energy level seam in the
+    image (seam)
+    """
     def removeSeam(self, leastEnergySeam):
-
-        if (self.demo == True):
-            self.demoStepsVert(leastEnergySeam)
+        if (self.demo):
+            self.demoSteps(leastEnergySeam)
 
         row, col = self.outputImg.shape[: 2]
         output = np.zeros((row, col - 1, 3))
@@ -164,26 +205,38 @@ class SeamCarver:
         self.outputImg = np.copy(output)
         self.stepImg = np.copy(self.outputImg)
 
+    """
+    addSeam
+    Adds pixel layer (seam) to the images
+    @params:    backtrack: Map of the lowest energy level seam in the image
+    after backtracking through the image (seam)
+    """
     def addSeam(self, backtrack):
-
+        if (self.demo):
+            self.demoSteps(backtrack)
         row, col = self.outputImg.shape[: 2]
         output = np.zeros((row, col + 1, 3))
         outputImg = self.outputImg
-
-        for r in range(row):
-            c = backtrack[r]
+        for currentRow in range(row):
+            currentColumn = backtrack[currentRow]
             for i in range(3):
-                if c == 0:
-                    output[r, c, i] = outputImg[r, c, i]
-                    output[r, c + 1, i] = np.average(outputImg[r, c: c + 2, i])
-                    output[r, c + 1:, i] = outputImg[r, c:, i]
+                if currentColumn == 0:
+                    output[currentRow, currentColumn, i] = outputImg[currentRow, currentColumn, i]
+                    output[currentRow, currentColumn + 1, i] = np.average(outputImg[currentRow, currentColumn: currentColumn + 2, i])
+                    output[currentRow, currentColumn + 1:, i] = outputImg[currentRow, currentColumn:, i]
                 else:
-                    output[r, :c, i] = outputImg[r, :c, i]
-                    output[r, c, i] = np.average(outputImg[r, c - 1: c + 1, i])
-                    output[r, c + 1:, i] = outputImg[r, c:, i]
+                    output[currentRow, :currentColumn, i] = outputImg[currentRow, :currentColumn, i]
+                    output[currentRow, currentColumn, i] = np.average(outputImg[currentRow, currentColumn - 1: currentColumn + 1, i])
+                    output[currentRow, currentColumn + 1:, i] = outputImg[currentRow, currentColumn:, i]
 
         self.outputImg = np.copy(output)
 
+    """
+    outputImageToFile
+    Outputs image to a file, and rotates it if necesary
+    @params:    filename: the filename and path where the image will be stored
+                img: the image itself
+    """
     def outputImageToFile(self, filename, img):
         if (self.rotated):
             img = cv2.rotate(img, 2)
@@ -191,18 +244,31 @@ class SeamCarver:
         else:
             cv2.imwrite(filename, img)
 
+    """
+    printPercentDone
+    Prints what percent done the program is with resizing the image, in a
+    minimum of 0.01% intervals
+    """
     def printPercentDone(self):
         if (self.percentDone >= self.prevPercentDone + 0.0001):
             self.prevPercentDone = round(self.percentDone, 4)
             print(str(round((self.prevPercentDone * 100), 2)) + "%")
 
-    def demoStepsVert(self, leastEnergySeam):
+    """
+    demoSteps
+    Outputs all steps in the process of resizing an image as other .jpg images
+    with a red line to represent the seam to be deleted or added
+    @params:    leastEnergySeam: the seam that has the lowest energy in the
+                photo
+    """
+    def demoSteps(self, leastEnergySeam):
+        self.stepImg = np.copy(self.outputImg)
         row, col = self.outputImg.shape[: 2]
         outputStep = self.stepImg
         for r in range(row):
             c = leastEnergySeam[r]
             self.stepImg[r,c] = [0, 0, 255]
-        self.outputImageToFile("output/steps/castle_" + str(self.outputWidth) + str(self.outputHeight) + "_" + str(self.count) + ".jpg", self.stepImg)
+        self.outputImageToFile("output/steps/iceberg_" + str(self.outputWidth) + "x"+ str(self.outputHeight) + "/iceberg_" + str(self.outputWidth) + "x" + str(self.outputHeight) + "_" + str(self.count) + ".jpg", self.stepImg)
         self.count += 1
 
 
@@ -215,5 +281,6 @@ class SeamCarver:
                 #TODO: [ ] change getLeastEnergySeam more
             #TODO: [X] start removeSeam(self, leastEnergySeam):
         #TODO: [X] Rotate image for changing height
-        #TODO: [ ] start addSeams():
-    #TODO: [ ] Test with multile images and output sizes
+        #TODO: [X] start addSeams():
+    #TODO: [X] Test with multile images and output sizes
+    #TODO: [ ] Use with mor images and sizes
