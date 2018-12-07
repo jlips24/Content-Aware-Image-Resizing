@@ -172,7 +172,6 @@ class SeamCarver:
 
         if (self.demo):
             self.demoSteps(backtrack)
-
         row, col = self.outputImg.shape[: 2]
         output = np.zeros((row, col + 1, 3))
         outputImg = self.outputImg
@@ -198,7 +197,7 @@ class SeamCarver:
         else:
             cv2.imwrite(filename, img)
 
-    def demoSteps(self, leastEnergySeam):
+    def demoStepsVert(self, leastEnergySeam):
         row, col = self.outputImg.shape[: 2]
         self.stepImg = np.copy(self.outputImg)
         outputStep = self.stepImg
@@ -207,6 +206,7 @@ class SeamCarver:
             self.stepImg[r,c] = [0, 0, 255]
         self.outputImageToFile("output/steps/castle_" + str(self.outputWidth) + str(self.outputHeight) + "_" + str(self.count) + ".jpg", self.stepImg)
         self.count += 1
+
 
     #TODO: [X] Finish seamCarving(self):
         #TODO: [X] Finsh removeSeams(self, seams):

@@ -11,8 +11,8 @@ import os
 
 def main():
     inputFilename = "input/castle.jpg"
-    outputWidth = 1430
-    outputHeight = 970
+    outputWidth = 1428
+    outputHeight = 968
     outputFilename = "output/castle_" + str(outputWidth) + "x" + str(outputHeight) + ".jpg"
 
 
