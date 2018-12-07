@@ -62,9 +62,7 @@ class SeamCarver:
             leastEnergySeam = self.getLeastEnergySeam(energyValuesDown[0])
             self.removeSeam(leastEnergySeam)
             self.percentDone = (self.count/self.delta)
-            if (self.percentDone >= self.prevPercentDone + 0.01):
-                self.prevPercentDone = round(self.percentDone, 4)
-                print(str(self.prevPercentDone * 100) + "%")
+            self.printPercentDone()
             count += 1
 
     def addSeams(self, seams):
@@ -75,9 +73,7 @@ class SeamCarver:
             leastEnergySeam = self.getLeastEnergySeam(energyValuesDown[1])
             self.addSeam(leastEnergySeam)
             self.percentDone = (self.count/self.delta)
-            if (self.percentDone >= self.prevPercentDone + 0.01):
-                self.prevPercentDone = round(self.percentDone, 4)
-                print(str(self.prevPercentDone * 100) + "%")
+            self.printPercentDone()
             count += 1
 
     def getEnergyMap(self):
@@ -194,6 +190,11 @@ class SeamCarver:
             cv2.imwrite(filename, img)
         else:
             cv2.imwrite(filename, img)
+
+    def printPercentDone(self):
+        if (self.percentDone >= self.prevPercentDone + 0.0001):
+            self.prevPercentDone = round(self.percentDone, 4)
+            print(str(round((self.prevPercentDone * 100), 2)) + "%")
 
     def demoStepsVert(self, leastEnergySeam):
         row, col = self.outputImg.shape[: 2]
