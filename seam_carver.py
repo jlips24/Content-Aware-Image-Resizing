@@ -33,11 +33,22 @@ class SeamCarver:
 
     def seamCarving(self):
         colSeams = self.inputWidth - self.outputWidth
-        # Checking if we are removing seams or adding them
-        if colSeams > 0:
-            self.removeSeams(colSeams)
-        elif colSeams < 0:
-            self.addSeams(-1 * colSeams)
+        # Checking if we are removing seams or adding them to the width
+        if colSeams != 0:
+            if colSeams > 0:
+                self.removeSeams(colSeams)
+            elif colSeams < 0:
+                self.addSeams(-1 * colSeams)
+
+        rowSeams = self.inputHeight - self.outputHeight
+        # Checking if we are removing seams or adding them to the width
+        if rowSeams != 0:
+            self.outputImg = cv2.rotate(self.outputImg, 0)
+            if rowSeams > 0:
+                self.removeSeams(colSeams)
+            elif rowSeams < 0:
+                self.addSeams(-1 * colSeams)
+            self.outputImg = cv2.rotate(self.outputImg, 1)
 
     def removeSeams(self, seams):
         count = 0
@@ -61,18 +72,6 @@ class SeamCarver:
         redEnergy = np.absolute(cv2.Scharr(red, -1, 1, 0)) + np.absolute(cv2.Scharr(red, -1, 0, 1))
         energyMap = blueEnergy + greenEnergy + redEnergy
         return energyMap
-        """
-        scharrx = cv2.Scharr(self.outputImg, cv2.CV_64F, 1, 0)
-        scharry = cv2.Scharr(self.outputImg, cv2.CV_64F, 0, 1)
-
-        abs_grad_x = cv2.convertScaleAbs(scharrx)
-        abs_grad_y = cv2.convertScaleAbs(scharry)
-
-
-        grad = cv2.addWeighted(abs_grad_x, 0.5, abs_grad_y, 0.5, 0)
-        grad = cv2.cvtColor(grad, cv2.COLOR_BGR2GRAY)
-        return grad
-        """
 
     def getCumulativeMaps(self, energyMap):
 
@@ -168,6 +167,6 @@ class SeamCarver:
                 #TODO: [ ]Test getCumulativeMaps(self, energyMap)
             #TODO: [X] start getLeastEnergySeam(self, energyValuesDown):
                 #TODO: [ ] change getLeastEnergySeam more
-            #TODO: [ ] start removeSeam(self, leastEnergySeam):
+            #TODO: [X] start removeSeam(self, leastEnergySeam):
         #TODO: [ ] start addSeams():
     #TODO: [ ] Test with multile images and output sizes
