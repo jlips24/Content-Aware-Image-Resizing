@@ -30,6 +30,7 @@ class SeamCarver:
         self.percentDone = 0.001
         self.prevPercentDone = self.percentDone
         self.demo = demo
+        self.rotated = False
 
     def seamCarving(self):
         colSeams = self.inputWidth - self.outputWidth
@@ -41,12 +42,13 @@ class SeamCarver:
                 self.addSeams(-1 * colSeams)
 
         rowSeams = self.inputHeight - self.outputHeight
-        # Checking if we are removing seams or adding them to the width
+        # Checking if we are removing seams or adding them to the height
         if rowSeams != 0:
             self.outputImg = cv2.rotate(self.outputImg, 0)
             self.outputHeight = np.size(self.outputImg, 0)
             self.outputWidth = np.size(self.outputImg, 1)
             self.stepImg = np.copy(self.outputImg)
+            self.rotated = True
             if rowSeams > 0:
                 self.removeSeams(rowSeams)
             elif rowSeams < 0:
@@ -153,13 +155,20 @@ class SeamCarver:
         self.outputImg = np.copy(output)
         self.stepImg = np.copy(self.outputImg)
 
+    def outputImageToFile(self, filename, img):
+        if (self.rotated):
+            img = cv2.rotate(img, 2)
+            cv2.imwrite(filename, img)
+        else:
+            cv2.imwrite(filename, img)
+
     def demoSteps(self, leastEnergySeam):
         row, col = self.outputImg.shape[: 2]
         outputStep = self.stepImg
         for r in range(row):
             c = leastEnergySeam[r]
             self.stepImg[r,c] = [0, 0, 255]
-        cv2.imwrite("output/steps/castle_" + str(self.outputWidth) + str(self.outputHeight) + "_" + str(self.count) + ".jpg", self.stepImg)
+        self.outputImageToFile("output/steps/castle_" + str(self.outputWidth) + str(self.outputHeight) + "_" + str(self.count) + ".jpg", self.stepImg)
         self.count += 1
 
     #TODO: [X] Finish seamCarving(self):

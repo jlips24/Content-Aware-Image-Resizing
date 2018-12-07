@@ -11,14 +11,14 @@ import os
 
 def main():
     inputFilename = "input/castle.jpg"
-    outputWidth = 1428
+    outputWidth = 1426
     outputHeight = 966
     outputFilename = "output/castle_" + str(outputWidth) + "x" + str(outputHeight) + ".jpg"
 
 
     sC = SeamCarver(inputFilename, outputFilename, outputWidth, outputHeight, True)
     sC.seamCarving();
-    cv2.imwrite(outputFilename, sC.outputImg)
+    sC.outputImageToFile(outputFilename, sC.outputImg)
     print("Done")
 
 if __name__ == "__main__":
