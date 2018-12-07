@@ -7,12 +7,18 @@ Created on Wed Dec  5 19:22:28 2018
 
 import numpy as np
 import cv2
-"""
 
-"""
+
 class SeamCarver:
     """
-
+    init
+    Initializes the SeamCarver object
+    @params:    inputFilename: the path and filename of the input image
+                outputFilename: the path and filename of the output image
+                outputWidth: the final width of the output image
+                outputHeight: the final height of the output image
+                demo: boolean that controls if we output images at each step
+                    (default is False)
     """
     def __init__(self, inputFilename, outputFilename, outputWidth, outputHeight, demo=False):
         # Setting input parameters
@@ -37,7 +43,8 @@ class SeamCarver:
         self.rotated = False
 
     """
-
+    seamCarving
+    Controls the workflow of the entire algorithm
     """
     def seamCarving(self):
         colSeams = self.inputWidth - self.outputWidth
@@ -62,7 +69,9 @@ class SeamCarver:
             elif rowSeams < 0:
                 self.addSeams(-1 * rowSeams)
     """
-
+    removeSeams
+    Controls the workflow of removing pixel layers (seam) to the images
+    @params:    seams: the number of seams to be removed
     """
     def removeSeams(self, seams):
         count = 0
@@ -75,7 +84,9 @@ class SeamCarver:
             self.printPercentDone()
             count += 1
     """
-
+    addSeams
+    Controls the workflow of adding pixel layers (seam) to the images
+    @params:    seams: the number of seams to be added
     """
     def addSeams(self, seams):
         count = 0
@@ -90,7 +101,9 @@ class SeamCarver:
 
     """
     getEnergyMap
-    Generates a
+    Generates an energy map of the image based on the partial derivatives in the
+    x and y channels for each pixel and each channel, then combines them
+    @returns:   energyMap: The energy map of the image
     """
     def getEnergyMap(self):
 
