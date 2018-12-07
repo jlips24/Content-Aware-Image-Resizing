@@ -48,7 +48,6 @@ class SeamCarver:
                 self.removeSeams(colSeams)
             elif rowSeams < 0:
                 self.addSeams(-1 * colSeams)
-            self.outputImg = cv2.rotate(self.outputImg, 1)
 
     def removeSeams(self, seams):
         count = 0
@@ -168,5 +167,6 @@ class SeamCarver:
             #TODO: [X] start getLeastEnergySeam(self, energyValuesDown):
                 #TODO: [ ] change getLeastEnergySeam more
             #TODO: [X] start removeSeam(self, leastEnergySeam):
+        #TODO: [X] Rotate image for changing height
         #TODO: [ ] start addSeams():
     #TODO: [ ] Test with multile images and output sizes
