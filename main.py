@@ -11,22 +11,15 @@ import os
 
 def main():
     inputFilename = "input/castle.jpg"
-    outputWidth = 1438
-    outputHeight = 968
+    outputWidth = 1426
+    outputHeight = 966
     outputFilename = "output/castle_" + str(outputWidth) + "x" + str(outputHeight) + ".jpg"
 
 
-    sC = SeamCarver(inputFilename, outputFilename, outputWidth, outputHeight)
+    sC = SeamCarver(inputFilename, outputFilename, outputWidth, outputHeight, True)
     sC.seamCarving();
-    cv2.imwrite(outputFilename, sC.outputImg)
+    sC.outputImageToFile(outputFilename, sC.outputImg)
     print("Done")
-    #energyMap = sC.getEnergyMap()
-    #mins, backtrack = sC.getCumulativeMaps(energyMap)
-    #out = sC.getLeastEnergySeam(mins)
-    #sC.removeSeam
-    #imwrite(sC.outputImg(Out))
-    #print(out.shape)
-    #print(out)
 
 if __name__ == "__main__":
     main()
