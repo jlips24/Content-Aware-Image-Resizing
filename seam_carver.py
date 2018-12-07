@@ -44,10 +44,13 @@ class SeamCarver:
         # Checking if we are removing seams or adding them to the width
         if rowSeams != 0:
             self.outputImg = cv2.rotate(self.outputImg, 0)
+            self.outputHeight = np.size(self.outputImg, 0)
+            self.outputWidth = np.size(self.outputImg, 1)
+            self.stepImg = np.copy(self.outputImg)
             if rowSeams > 0:
-                self.removeSeams(colSeams)
+                self.removeSeams(rowSeams)
             elif rowSeams < 0:
-                self.addSeams(-1 * colSeams)
+                self.addSeams(-1 * rowSeams)
 
     def removeSeams(self, seams):
         count = 0
