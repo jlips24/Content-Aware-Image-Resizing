@@ -66,6 +66,19 @@ class SeamCarver:
                 self.prevPercentDone = round(self.percentDone, 2)
                 print(str(self.prevPercentDone * 100) + "%")
             count += 1
+            
+    def addSeams(self, seams):
+        count = 0
+        while count < seams:
+            energyMap = self.getEnergyMap()
+            energyValuesDown = self.getCumulativeMaps(energyMap)
+            leastEnergySeam = self.getLeastEnergySeam(energyValuesDown[1])
+            self.addSeam(leastEnergySeam)
+            self.percentDone = (count/self.delta)
+            if (self.percentDone >= self.prevPercentDone + 1):
+                self.prevPercentDone += 1
+                print(str(self.prevPercentDone) + "%")
+            count += 1
 
     def getEnergyMap(self):
 
@@ -170,6 +183,27 @@ class SeamCarver:
             self.stepImg[r,c] = [0, 0, 255]
         self.outputImageToFile("output/steps/castle_" + str(self.outputWidth) + str(self.outputHeight) + "_" + str(self.count) + ".jpg", self.stepImg)
         self.count += 1
+
+    def addSeam(self, backtrack):
+        
+        row, col = self.outputImg.shape[: 2]
+        output = np.zeros((row, col + 1, 3))
+        outputImg = self.outputImg
+        
+        for r in range(row):
+            c = backtrack[r]
+            for i in range(3):
+                if c == 0:
+                    output[r, c, i] = outputImg[r, c, i]
+                    output[r, c + 1, i] = np.average(outputImg[r, c: c + 2, i])
+                    output[r, c + 1:, i] = outputImg[r, c:, i]
+                else:
+                    output[r, :c, i] = outputImg[r, :c, i]
+                    output[r, c, i] = np.average(outputImg[r, c - 1: c + 1, i])
+                    output[r, c + 1:, i] = outputImg[r, c:, i]
+                    
+        self.outputImg = np.copy(output)
+
 
     #TODO: [X] Finish seamCarving(self):
         #TODO: [X] Finsh removeSeams(self, seams):
