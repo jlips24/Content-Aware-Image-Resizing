@@ -66,7 +66,7 @@ class SeamCarver:
                 self.prevPercentDone = round(self.percentDone, 2)
                 print(str(self.prevPercentDone * 100) + "%")
             count += 1
-            
+
     def addSeams(self, seams):
         count = 0
         while count < seams:
@@ -157,7 +157,7 @@ class SeamCarver:
     def removeSeam(self, leastEnergySeam):
 
         if (self.demo == True):
-            self.demoSteps(leastEnergySeam)
+            self.demoStepsVert(leastEnergySeam)
 
         row, col = self.outputImg.shape[: 2]
         output = np.zeros((row, col - 1, 3))
@@ -168,28 +168,12 @@ class SeamCarver:
         self.outputImg = np.copy(output)
         self.stepImg = np.copy(self.outputImg)
 
-    def outputImageToFile(self, filename, img):
-        if (self.rotated):
-            img = cv2.rotate(img, 2)
-            cv2.imwrite(filename, img)
-        else:
-            cv2.imwrite(filename, img)
-
-    def demoSteps(self, leastEnergySeam):
-        row, col = self.outputImg.shape[: 2]
-        outputStep = self.stepImg
-        for r in range(row):
-            c = leastEnergySeam[r]
-            self.stepImg[r,c] = [0, 0, 255]
-        self.outputImageToFile("output/steps/castle_" + str(self.outputWidth) + str(self.outputHeight) + "_" + str(self.count) + ".jpg", self.stepImg)
-        self.count += 1
-
     def addSeam(self, backtrack):
-        
+
         row, col = self.outputImg.shape[: 2]
         output = np.zeros((row, col + 1, 3))
         outputImg = self.outputImg
-        
+
         for r in range(row):
             c = backtrack[r]
             for i in range(3):
@@ -201,8 +185,24 @@ class SeamCarver:
                     output[r, :c, i] = outputImg[r, :c, i]
                     output[r, c, i] = np.average(outputImg[r, c - 1: c + 1, i])
                     output[r, c + 1:, i] = outputImg[r, c:, i]
-                    
+
         self.outputImg = np.copy(output)
+
+    def outputImageToFile(self, filename, img):
+        if (self.rotated):
+            img = cv2.rotate(img, 2)
+            cv2.imwrite(filename, img)
+        else:
+            cv2.imwrite(filename, img)
+
+    def demoStepsVert(self, leastEnergySeam):
+        row, col = self.outputImg.shape[: 2]
+        outputStep = self.stepImg
+        for r in range(row):
+            c = leastEnergySeam[r]
+            self.stepImg[r,c] = [0, 0, 255]
+        self.outputImageToFile("output/steps/castle_" + str(self.outputWidth) + str(self.outputHeight) + "_" + str(self.count) + ".jpg", self.stepImg)
+        self.count += 1
 
 
     #TODO: [X] Finish seamCarving(self):
